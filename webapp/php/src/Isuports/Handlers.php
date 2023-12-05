@@ -403,14 +403,29 @@ class Handlers
             $billingMap[$pid] = 'player';
         }
 
+	if(!is_null($comp->finishedAt)) {
+		return new BillingReport(
+			competitionID: $comp->id,
+			competitionTitle: $comp->title,
+			playerCount: $playerCount,
+			visitorCount: $visitorCount,
+			billingPlayerYen: 100 * $playerCount,
+			billingVisitorYen: 100 * $visitorCount,
+			billingYen: 100 * $playerCount + 10 * $visitorCount,
+		);
+	}
+
         // 大会が終了している場合のみ請求金額が確定するので計算する
-        $playerCount = 0;
-        $visitorCount = 0;
-        if (!is_null($comp->finishedAt)) {
-            $counts = array_count_values($billingMap);
-            $playerCount = $counts['player'] ?? 0;
-            $visitorCount =  $counts['visitor'] ?? 0;
-        }
+        //$playerCount = 0;
+        //$visitorCount = 0;
+        //if (!is_null($comp->finishedAt)) {
+        //    $counts = array_count_values($billingMap);
+        //    $playerCount = $counts['player'] ?? 0;
+        //    $visitorCount =  $counts['visitor'] ?? 0;
+        //}
+	$count = array_count_values($billingMap);
+	$playerCount = $counts['player'] ?? 0;
+	$visitorCount = $counts['visitor'] ?? 0;
 
         fclose($fl);
 
